@@ -1,0 +1,56 @@
+from csv import reader
+
+opened_file = open("C:\\Users\\mohammeds2\\OneDrive - Verifone\\Desktop\\New folder (4) ML\\Uber data\\Uber_Request_Data.csv")
+
+read_file = reader(opened_file)
+
+data = list(read_file)
+
+print(data)
+
+#removing header
+taxi_modified = taxi.copy()  //creates a copy
+taxi_list = taxi_list[1:]
+
+
+-------------------NUMPY--------------------
+
+np.genfromtxt(filename, delimiter=None)
+
+filename: A positional argument, usually a string representing the path to the text file to be read.
+delimiter: A named argument, specifying the string used to separate each value.
+In this case, because we have a CSV file, the delimiter is a comma. Here's how we'd read in a file named data.csv:
+
+data = np.genfromtxt('data.csv', delimiter=',')
+
+
+--------------NUMPY BOOL With data(rows and cols)--------
+										//1D
+february_bool = (pickup_month == 2)
+february = pickup_month[february_bool]
+february_rides = february.shape[0]	//this willl give all the rides(rows) which happen in feb
+																	
+										//2D
+tip_amount = taxi[:,12]
+tip_bool = tip_amount>50
+top_tips = taxi[tip_bool,5:14]		//this will give all trie rows with tip price greater than 50 and cols from 5 to 13
+
+------------------ THAT DATE FUNCTION ------------
+#Method to convert "-" and "/" date types to  %d/%m/%Y %S:%M:%H
+def getConvertedDate(series):
+    series_bool_t1 = series.str.contains("/")
+    series_bool_t2 = series.str.contains("-")
+    series = pd.to_datetime(series) #converting to numpy datetime type dtype('<M8[ns]')
+    #X = series[series_bool_t1]
+    series[series_bool_t1] = series.dt.strftime('%m %S:%M:%H')
+    #YY = series[series_bool_t1].dt.strftime('%m %S:%M:%H')
+    series[series_bool_t2] = pd.to_datetime(series[series_bool_t2])
+    series[series_bool_t2] = series.dt.strftime('%m %S:%M:%H')
+    return series
+
+--------------------DRAFT ----------------
+
+#categorizing time
+plt.scatter(Uber["Request time"], Uber["Request date"], s=10, c='b', marker="s", label='first')
+plt.legend(loc='upper left');
+plt.show()

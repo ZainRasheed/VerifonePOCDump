@@ -1,0 +1,2266 @@
+openapi : 3.0.0
+info :
+  title : svc-global-settlement-engine
+  description : |
+    Enhanced Settlement Engine has set of exposed APIs as follow.
+
+    Acquirer configuration : To Register all acquirers job, delete, pause, resume job and On demand settlement.
+
+    Settlement Pim Requests has 5 set of API Requests,
+
+    'ACQUIRER SETTLEMENT' - To initiate the settlement job for Acquirer process types.
+
+    'MERCHANT SETTLEMENT' - To initiate the settlement job for Merchant process types.
+
+    'BANKING PARTNER SETTLEMENT' - To initiate the settlement job for BankingPartner process types.
+
+    'RECONCILIATION SETTLEMENT' - To initiate the settlement job for Reconciliation process types.
+
+    'CLEARING RETURN REPORT SETTLEMENT' - To initiate the settlement job for ClearingReturnReport process types.
+  version : "2.0.1"
+servers :
+  - url : <IP>:<Port>/internal
+    description : URL
+tags :
+  - name : Acquirer configuration
+    description : These APIs are used to Configure settlement jobs in settlement-engine and update settlement batch info
+  - name : Settlement Pim Requests
+    description : These APIs are used to send Job Data to the specific Settlement Pim.
+paths :
+  /settlement-engine/api/registerJob:
+    post :
+      tags :
+        - Acquirer configuration
+      summary : Add new Acquirer Job
+      parameters : 
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/register"
+      responses :
+        "200" :
+          description : SUCCESS
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/RegisterSuccess"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/RegisterBadRequest"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/RegisterServerError"
+        "405" :
+          description : method not allowed
+
+  /settlement-engine/api/rescheduleJob:
+    patch :
+      tags :
+        - Acquirer configuration
+      summary : Reschedule an existing Acquirer Job
+      parameters : 
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/reschedule"
+      responses :
+        "200" :
+          description : SUCCESS
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/RescheduleSuccess"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/RescheduleBadRequest"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/RescheduleServerError"
+        "405" :
+          description : method not allowed
+
+  /settlement-engine/api/pauseJob:
+    patch :
+      tags :
+        - Acquirer configuration
+      summary : Pause an existing Acquirer Job
+      parameters : 
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/pause"
+      responses :
+        "200" :
+          description : SUCCESS
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/PauseSuccess"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/PauseBadRequest"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/PauseServerError"
+        "405" :
+          description : method not allowed
+
+  /settlement-engine/api/resumeJob:
+    patch :
+      tags :
+        - Acquirer configuration
+      summary : Resume an existing Acquirer Job
+      parameters : 
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/resume"
+      responses :
+        "200" :
+          description : SUCCESS
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/ResumeSuccess"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/ResumeBadRequest"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/RescheduleServerError"
+        "405" :
+          description : method not allowed
+
+  /settlement-engine/api/deleteJob:
+    delete :
+      tags :
+        - Acquirer configuration
+      summary : Delete an existing Acquirer Job
+      parameters : 
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/delete"
+      responses :
+        "200" :
+          description : SUCCESS
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/DeleteSuccess"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref :  "#/components/schemas/DeleteBadRequest"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/DeleteServerError"
+        "405" :
+          description : method not allowed
+
+  /settlement-engine/api/instantSettlement:
+    post :
+      tags :
+        - Acquirer configuration
+      summary : Initiate On-demand Settlement.
+      parameters : 
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/instant"
+      responses :
+        "200" :
+          description : SUCCESS
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/InstantSuccess"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/InstantBadRequest"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/InstantServerError"
+        "405" :
+          description : method not allowed
+
+  /settlement-engine/api/getJobDetails:
+    get :
+      tags :
+        - Acquirer configuration
+      summary : Get registered Settlement Jobs
+      parameters : 
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+        - name : page
+          in : path
+          description : 1 page or each page will return 50,000 records.
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/reqParam"
+        - name : name
+          in : path
+          type : string
+          example : <Acquirer Name>
+          description : |
+            The Name of the Acquirer whose SETTLEMENT JOB needs to be found.
+
+            Send EMPTY/null to return ALL Job Details
+      responses :
+        "200" :
+          description : SUCCESS
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/GetJobSuccess"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/GetJobBadRequest"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/GetJobServerError"
+        "405" :
+          description : method not allowed
+
+  /api/processAcquirerSettlement :
+    post :
+      tags :
+        - Settlement Pim Requests
+      summary : Acquirer Pim API
+      parameters :
+        - name : x-vfi-payment-host
+          in : header
+          description : Acquirer name of the Settlement pim
+          required : true
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/headers"
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/acquirer"
+      responses :
+        "200" :
+          description : Success
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Success"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/BadRequest"
+        "404" :
+          description : Not Found
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/NotFound"
+        "503" :
+          description : Service Unavailable
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/ServiceUnavailable"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Fail"
+
+  /api/processMerchantSettlement :
+    post :
+      tags :
+        - Settlement Pim Requests
+      summary : Merchant Pim API
+      parameters :
+        - name : x-vfi-payment-host
+          in : header
+          description : Acquirer name of the Settlement pim
+          required : true
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/headers"
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/merchant"
+      responses :
+        "200" :
+          description : Success
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Success"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/BadRequest"
+        "404" :
+          description : Not Found
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/NotFound"
+        "503" :
+          description : Service Unavailable
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/ServiceUnavailable"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Fail"
+
+  /api/processBankingPartnerSettlement :
+    post :
+      tags :
+        - Settlement Pim Requests
+      summary : BankingPartner Pim API
+      parameters :
+        - name : x-vfi-payment-host
+          in : header
+          description : Acquirer name of the Settlement pim
+          required : true
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/headers"
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/bankingpartner"
+      responses :
+        "200" :
+          description : Success
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Success"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/BadRequest"
+        "404" :
+          description : Not Found
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/NotFound"
+        "503" :
+          description : Service Unavailable
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/ServiceUnavailable"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Fail"
+
+  /api/processReconciliationSettlement :
+    post :
+      tags :
+        - Settlement Pim Requests
+      summary : Reconciliation Pim API
+      parameters :
+        - name : x-vfi-payment-host
+          in : header
+          description : Acquirer name of the Settlement pim
+          required : true
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/headers"
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/reconciliation"
+      responses :
+        "200" :
+          description : Success
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Success"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/BadRequest"
+        "404" :
+          description : Not Found
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/NotFound"
+        "503" :
+          description : Service Unavailable
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/ServiceUnavailable"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Fail"
+
+  /api/processClearingReturnReportSettlement :
+    post :
+      tags :
+        - Settlement Pim Requests
+      summary : ClearingReturnReport Pim API
+      parameters :
+        - name : x-vfi-payment-host
+          in : header
+          description : Acquirer name of the Settlement pim
+          required : true
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/headers"
+        - name : x-b3-trace-id
+          in : header
+          description : Trace Id from DMZ GSC.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/traceId"
+        - name : x-vfi-idempotency-key
+          in : header
+          description : idempotency key from Client.
+          required : false
+          content :
+            application/json :          
+              schema : 
+                $ref : "#/components/schemas/correlationId"
+      requestBody :
+        $ref : "#/components/requestBodies/clearingreturnreport"
+      responses :
+        "200" :
+          description : Success
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Success"
+        "400" :
+          description : Bad Request
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/BadRequest"
+        "404" :
+          description : Not Found
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/NotFound"
+        "503" :
+          description : Service Unavailable
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/ServiceUnavailable"
+        "500" :
+          description : Internal server error
+          content :
+            application/json :
+              schema :
+                $ref : "#/components/schemas/Fail"
+
+  /api/processForcedCutoverSettlement:
+    post:
+      tags:
+        - Settlement Pim Requests
+      summary: Forced Cutover TBS API
+      parameters:
+        - name: x-vfi-payment-host
+          in: header
+          description: Acquirer name
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/headers'
+        - name: x-vfi-jwt
+          in: header
+          description: jwt token
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/jwt'
+        - name: x-b3-trace-id
+          in: header
+          description: Trace Id from DMZ GSC.
+          required: false
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/traceId'
+        - name: x-vfi-idempotency-key
+          in: header
+          description: idempotency key from Client.
+          required: false
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/correlationId'
+      requestBody:
+        $ref: '#/components/requestBodies/forcedCutover'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForcedCutoverSuccess'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fail'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+
+
+components :
+  requestBodies :
+    register :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/SingleCronTime"
+      description :
+      required : true
+
+    reschedule :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/RescheduleSingleCronTime"
+      description :
+      required : true
+
+    pause :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/PauseSingle"
+      description :
+      required : true
+
+    resume :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/ResumeSingle"
+      description :
+      required : true
+
+    delete :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/DeleteSingle"
+      description :
+      required : true
+
+    instant :
+      content :
+        application/json :
+          schema :
+            oneOf :
+              - $ref : "#/components/schemas/OnDemand"
+              - $ref : "#/components/schemas/OnDemandMerchant"
+              - $ref : "#/components/schemas/OnDemandCutOff"              
+      description : Acquirer should be configured with it's name before sending on-demand settlement request.
+      required : true
+
+    acquirer :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/AcquirerRequest"
+      description : ""
+      required : true
+
+    merchant :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/Merchant"
+      description : ""
+      required : true
+
+    bankingpartner :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/BankingPartner"
+      description : ""
+      required : true
+
+    reconciliation :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/ReconciliationRequest"
+      description : ""
+      required : true
+
+    clearingreturnreport :
+      content :
+        application/json :
+          schema :
+            $ref : "#/components/schemas/ClearingReturnReport"
+      description : ""
+      required : true
+
+    forcedCutover:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForcedCutoverRequest'
+      description: ''
+      required: true
+
+  schemas :
+    SingleCronTime :
+      type : object
+      required :
+        - name
+        - processType
+        - settlementInitTime
+      properties :
+        name :
+          type : string
+          example: <Acquirer name>
+          description : Name of the acquirer.
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRER
+            - MERCHANT
+            - DEVICE     
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER 
+            - REPORTING
+            - BANKINGPARTNER
+            - RECONCILIATION
+            - CLEARING_RETURN_REPORT
+            - FORCED_CUTOVER
+        settlementInitTime :
+          type : array
+          description : This field is required to submit the time to call entity service for this Acquirer. The value should be in form of Cron expression.
+          items:
+            type : string
+          example : [45 12 * * * ?]
+        timeZone :
+          type : string
+          description : This field is to specify the time zone of scheduling time.
+          example : UTC
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          properties :
+            populateEntityRequired :
+              type : boolean
+              example : false        
+          additionalProperties :
+            type : object
+
+   
+    MultipleCronTime :
+      type : object
+      required :
+        - name
+        - processType
+        - settlementInitTime
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example: <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+        settlementInitTime :
+          type : array
+          description : This field is required to submit the time to call entity service for this Acquirer. The value should be in form of Cron expression.
+          items:
+            type : string
+          example : [45 12 * * * ?, 30 8 * * * ?]
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          additionalProperties :
+            type : object
+
+    RescheduleSingleCronTime :
+      type : object
+      required :
+        - name
+        - processType
+        - settlementInitTime
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRER
+            - MERCHANT
+            - BANKINGPARTNER
+            - RECONCILIATION
+            - CLEARING_RETURN_REPORT
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+            - REPORTING
+            - DEVICE
+            - FORCED_CUTOVER
+        settlementInitTime :
+          type : array
+          description : This field is required to submit the time to call entity service for this Acquirer. The value should be in form of Cron expression.
+          items:
+            type : string
+          example : [45 12 * * * ?]
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          properties :
+            populateEntityRequired :
+              type : boolean
+              example : false           
+          additionalProperties :
+            type : object
+
+    RescheduleMultipleCronTime :
+      type : object
+      required :
+        - name
+        - processType
+        - settlementInitTime
+        - settlementInitTimeProposed
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER                        
+        settlementInitTime :
+          type : array
+          description : This field is required to submit the time to call entity service for this Acquirer. The value should be in form of Cron expression.
+          items:
+            type : string
+          example : [45 12 * * * ?, 30 8 * * * ?]
+        timeZone :
+          type : string
+          description : This field is to specify the time zone of scheduling time.
+          example : UTC          
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          additionalProperties :
+            type : object
+
+    PauseSingle :
+      type : object
+      required :
+        - name
+        - processType
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRER
+            - MERCHANT
+            - BANKINGPARTNER
+            - RECONCILIATION
+            - CLEARING_RETURN_REPORT
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+            - REPORTING
+            - DEVICE
+            - FORCED_CUTOVER
+
+    PauseMultiple :
+      type : object
+      required :
+        - name
+        - processType
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+        settlementInitTime :
+          type : string
+          example : 1 1 1 * * ?
+          description : Use this field to PAUSE a SINGLE job specific to settlementInitTime. This field should be REGISTERED time. The value should be in form of Cron expression.
+
+    ResumeSingle :
+      type : object
+      required :
+        - name
+        - processType
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRER
+            - MERCHANT
+            - BANKINGPARTNER
+            - RECONCILIATION
+            - CLEARING_RETURN_REPORT
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+            - REPORTING
+            - DEVICE
+            - FORCED_CUTOVER
+            
+    ResumeMultiple :
+      type : object
+      required :
+        - name
+        - processType
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+        settlementInitTime :
+          type : string
+          example : 1 1 1 * * ?
+          description : Use this field to RESUME a SINGLE job specific to settlementInitTime. This field should be REGISTERED time. The value should be in form of Cron expression.
+
+    DeleteSingle :
+      type : object
+      required :
+        - name
+        - processType
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRER
+            - MERCHANT
+            - BANKINGPARTNER
+            - RECONCILIATION
+            - CLEARING_RETURN_REPORT
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+            - REPORTING
+            - DEVICE
+            - FORCED_CUTOVER
+            
+    DeleteMultiple :
+      type : object
+      required :
+        - name
+        - processType
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+        settlementInitTime :
+          type : string
+          example : 1 1 1 * * ?
+          description : Use this field to DELETE a SINGLE job specific to settlementInitTime. This field should be REGISTERED time. The value should be in form of Cron expression.
+
+    OnDemand :
+      type : object
+      required :
+        - name
+        - processType
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRER
+            - BANKINGPARTNER
+            - RECONCILIATION
+            - CLEARING_RETURN_REPORT
+            - REPORTING
+            - DEVICE
+            - FORCED_CUTOVER
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          properties :
+            populateEntityRequired :
+              type : boolean
+              example : false            
+          additionalProperties :
+            type : object
+            
+    OnDemandMerchant :
+      type : object
+      required :
+        - name
+        - processType
+        - contract
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - MERCHANT
+        contract :
+          type : string
+          example : bc7e2acc-aa57-4c4d-bf95-923ed7b4cf70
+          description: This field is mapped with paymentProviderContract.contractUid.
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          properties :
+            populateEntityRequired :
+              type : boolean
+              example : false            
+          additionalProperties :
+            type : object
+            
+    OnDemandCutOff :
+      type : object
+      required :
+        - name
+        - processType
+        - settlementInitTime
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+        settlementInitTime :
+          type : string
+          example : 1 1 1 * * ?
+          description : This field is the REGISTERED time to call entity service for this Acquirer. The value should be in form of Cron expression.
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          properties :
+            populateEntityRequired :
+              type : boolean
+              example : false            
+          additionalProperties :
+            type : object
+          
+    RegisterSuccess :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1100
+        message:
+          type: string
+          example: Job has been registered successfully
+        type:
+          type: string
+          example: ACQUIRER
+        jobId : 
+          type: string
+          example: BNP_PARIBAS_ACQUIRER
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    RescheduleSuccess :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1100
+        message:
+          type: string
+          example: Job has been rescheduled successfully.
+        type:
+          type: string
+          example: ACQUIRER
+        jobId : 
+          type: string
+          example: BNP_PARIBAS_ACQUIRER          
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    PauseSuccess :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1100
+        message:
+          type: string
+          example: Requested trigger paused successfully.
+        type:
+          type: string
+          example: ACQUIRER
+        jobId : 
+          type: string
+          example: BNP_PARIBAS_ACQUIRER          
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    ResumeSuccess :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1100
+        message:
+          type: string
+          example: Requested trigger resumed successfully.
+        type:
+          type: string
+          example: ACQUIRER
+        jobId : 
+          type: string
+          example: BNP_PARIBAS_ACQUIRER          
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    DeleteSuccess :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1100
+        message:
+          type: string
+          example: Acquirer successfully deleted.
+        type:
+          type: string
+          example: ACQUIRER
+        jobId : 
+          type: string
+          example: BNP_PARIBAS_ACQUIRER          
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    InstantSuccess :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1100
+        message:
+          type: string
+          example: Instant settlement process initiated.
+        type:
+          type: string
+          example: ACQUIRER
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    GetJobSuccess :
+      type : array
+      items :
+        $ref : "#/components/schemas/AcquirerDetail"
+      description : List of register job details.
+
+    RegisterBadRequest :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1102
+        message:
+          type: string
+          example: [Acquirer registration error. <Reason> ]
+        type:
+          type: string
+          example: INTERNAL_REQUEST_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    RescheduleBadRequest :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1102
+        message:
+          type: string
+          example: [Acquirer rescheduling error. <Reason> ]
+        type:
+          type: string
+          example: INTERNAL_REQUEST_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    PauseBadRequest :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1102
+        message:
+          type: string
+          example: [Acquirer pausing error. <Reason> ]
+        type:
+          type: string
+          example: INTERNAL_REQUEST_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    ResumeBadRequest :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1102
+        message:
+          type: string
+          example: [Acquirer resuming error. <Reason> ]
+        type:
+          type: string
+          example: INTERNAL_REQUEST_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    DeleteBadRequest :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1102
+        message:
+          type: string
+          example: [Acquirer deleting error. <Reason> ]
+        type:
+          type: string
+          example: INTERNAL_REQUEST_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    InstantBadRequest :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1102
+        message:
+          type: string
+          example: [Instant settlement error. <Reason> ]
+        type:
+          type: string
+          example: INTERNAL_REQUEST_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    GetJobBadRequest :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1102
+        message:
+          type: string
+          example: [Get job details error. <Reason> ]
+        type:
+          type: string
+          example: INTERNAL_REQUEST_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    RegisterServerError :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1103
+        message:
+          type: string
+          example: [Acquirer registration error. <Reason> ]
+        type:
+          type: string
+          example: API_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+    RescheduleServerError :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1103
+        message:
+          type: string
+          example: [Acquirer rescheduling error. <Reason> ]
+        type:
+          type: string
+          example: API_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+    PauseServerError :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1103
+        message:
+          type: string
+          example: [Acquirer pausing error. <Reason> ]
+        type:
+          type: string
+          example: API_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+    ResumeServerError :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1103
+        message:
+          type: string
+          example: [Acquirer resuming error. <Reason> ]
+        type:
+          type: string
+          example: API_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+    DeleteServerError :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1103
+        message:
+          type: string
+          example: [Acquirer deleting error. <Reason> ]
+        type:
+          type: string
+          example: API_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+    InstantServerError :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1103
+        message:
+          type: string
+          example: [Instant settlement error. <Reason> ]
+        type:
+          type: string
+          example: API_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+    GetJobServerError :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1103
+        message:
+          type: string
+          example: [Get job details error. <Reason>]
+        type:
+          type: string
+          example: API_ERROR
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+
+    headers :
+      type : string
+      example : <Acquirer Name>
+    reqParam :
+      type : int
+      example : 3
+    traceId:
+      type : string
+      example : <UUID>
+    correlationId:
+      type : string
+      example : <UUID>
+    jwt:
+      type: string
+      example: <1234abcd>
+    AcquirerRequest :
+      type : object
+      required :
+        - acqName
+        - processType
+        - paymentProviderContracts
+        - acquirerBatchId
+        - settlementTime
+      properties :
+        paymentProviderContracts :
+          type : array
+          items :
+            $ref : "#/components/schemas/paymentProviderContracts"
+          description : |
+            A list of paymentProviderContracts/merchant details provided by Entity service.
+
+            Note - This is a dummy PPC data, accurate data can be found in Entity service redoc
+        acquirerBatchId :
+          type : string
+          example : d4bc555e-19ab-46c8-81ff-31c75af4039b
+          description : Unique Acquirer batch ID generated by Settlement Engine.
+        acqName :
+          type : string
+          example : <Acquirer Name>
+          description : Name of Acquirer registered in Entity Service
+        processType :
+          type : string
+          example : <Process Type>
+          enum :
+            - ACQUIRER
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+          description : ProcessorType of acquirer which is registered in GSC.
+        onDemandSettlement :
+          type : boolean
+          example : false
+          description : If TRUE instant settlement will be initiated, if false the regular Scheduled job will be initiated.
+        settlementTime :
+          type : string
+          example : "13:50:16"
+          description : Start time for the settlement.
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          additionalProperties :
+            type : object
+    BankingPartner :
+      type : object
+      required :
+        - acqName
+        - processType
+        - paymentProviderContracts
+        - acquirerBatchId
+        - settlementTime
+      properties :
+        paymentProviderContracts :
+          type : array
+          items :
+            $ref : "#/components/schemas/paymentProviderContracts"
+          description : |
+            A list of paymentProviderContracts/merchant details provided by Entity service.
+
+            Note - This is a dummy PPC data, accurate data can be found in Entity service redoc
+        acquirerBatchId :
+          type : string
+          example : d4bc555e-19ab-46c8-81ff-31c75af4039b
+          description : Unique Acquirer batch ID generated by Settlement Engine.
+        acqName :
+          type : string
+          example : <Acquirer Name>
+          description : Name of Acquirer registered in Entity Service
+        processType :
+          type : string
+          example : <Process Type>
+          enum :
+            - BANKINGPARTNER
+          description : ProcessorType of acquirer which is registered in GSC.
+        onDemandSettlement :
+          type : boolean
+          example : false
+          description : If TRUE instant settlement will be initiated, if false the regular Scheduled job will be initiated.
+        settlementTime :
+          type : string
+          example : "21:44:16"
+          description : Start time for the settlement. Property for non-onDemandSettlement.
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          additionalProperties :
+            type : object
+    Merchant :
+      type : object
+      required :
+        - acqName
+        - processType
+        - paymentProviderContracts
+        - merchantBatchId
+        - acquirerBatchId
+      properties :
+        paymentProviderContracts :
+          $ref : "#/components/schemas/paymentProviderContracts"
+          description : |
+            A list of paymentProviderContracts/merchant details provided by Entity service.
+
+            Note - This is a dummy PPC data, accurate data can be found in Entity service redoc
+        acquirerBatchId :
+          type : string
+          example : d4bc555e-19ab-46c8-81ff-31c75af4039b
+          description : Unique Acquirer batch ID generated by Settlement Engine.
+        acqName :
+          type : string
+          example : <Acquirer Name>
+          description : Name of Acquirer registered in Entity Service
+        processType :
+          type : string
+          example : <Process Type>
+          enum :
+            - MERCHANT
+          description : ProcessorType of acquirer which is registered in GSC.
+        onDemandSettlement :
+          type : boolean
+          example : false
+          description : If TRUE instant settlement will be initiated, if false the regular Scheduled job will be initiated.
+        merchantBatchId :
+          type : string
+          example : e2c5ef23-fc54-49d9-8e6f-fe10f82c9089
+          description : Unique Merchant batch ID generated by Settlement Engine.
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          additionalProperties :
+            type : object
+    ReconciliationRequest :
+      type : object
+      required :
+        - acqName
+        - processType
+        - acquirerBatchId
+        - settlementTime
+      properties :
+        acquirerBatchId :
+          type : string
+          example : d4bc555e-19ab-46c8-81ff-31c75af4039b
+          description : Unique Acquirer batch ID generated by Settlement Engine.
+        acqName :
+          type : string
+          example : <Acquirer Name>
+          description : Name of Acquirer registered in Entity Service
+        processType :
+          type : string
+          example : <Process Type>
+          enum :
+            - RECONCILIATION
+          description : ProcessorType of acquirer which is registered in GSC.
+        onDemandSettlement :
+          type : boolean
+          example : false
+          description : If TRUE instant settlement will be initiated, if false the regular Scheduled job will be initiated.
+        settlementTime :
+          type : string
+          example : "23:50:16"
+          description : Start time for the settlement.
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          additionalProperties :
+            type : object
+    ClearingReturnReport :
+      type : object
+      required :
+        - acqName
+        - processType
+        - acquirerBatchId
+        - settlementTime
+      properties :
+        acquirerBatchId :
+          type : string
+          example : d4bc555e-19ab-46c8-81ff-31c75af4039b
+          description : Unique Acquirer batch ID generated by Settlement Engine.
+        acqName :
+          type : string
+          example : <Acquirer Name>
+          description : Name of Acquirer registered in Entity Service
+        processType :
+          type : string
+          example : <Process Type>
+          enum :
+            - CLEARING_RETURN_REPORT
+          description : ProcessorType of acquirer which is registered in GSC.
+        onDemandSettlement :
+          type : boolean
+          example : false
+          description : If TRUE instant settlement will be initiated, if false the regular Scheduled job will be initiated.
+        settlementTime :
+          type : string
+          example : "15:30:16"
+          description : Start time for the settlement.
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          additionalProperties :
+            type : object
+    ForcedCutoverRequest:
+      type: object
+      required:
+        - settlementData
+        - internal
+        - acqName
+      properties:
+        settlementData:
+          type: object
+          required:
+            - poiId
+            - merchantId
+            - createdDateTime
+          description: >
+            This data is prepared using the response we get from the entity service.
+
+
+            Note - This is a dummy settlementData.
+          properties:
+            poiId:
+              type: string
+              example: "20222030"
+              description: This is the altVfiPoiId field that we get in the entity response.
+            merchantId:
+              type: string
+              example: "10001"
+              description: This is the altVfiEntityId that we get in the entity response.
+            createdDateTime:
+              type: string
+              example: "2022-01-03T06:01:46.730Z"
+              description: Current date in UTC timezone.
+
+        internal:
+          type: object
+          description: >
+            This data is prepared using the response we get from the entity service.
+
+
+            Note - This is a dummy internal.
+          properties:
+            poi:
+              type: object
+              required:
+                - poiUid
+                - createdDate
+                - modifiedDate
+                - status
+                - entityUid
+              description: >
+                This data is prepared using the response we get from the entity service.
+
+
+                Note - This is a dummy poi.
+              properties:
+                altVfiPoiId:
+                  type: string
+                  example: "123"
+                  description: This is equivalent to the poiId used in the settlementData.
+                name:
+                  type: string
+                  example: "Carbon Mobi"
+                  description: Name associated with the terminal.
+                type:
+                  type: string
+                  example: "POINT_OF_SALE"
+                estateManagementId:
+                  type: string
+                  example: "1011123"
+                description:
+                  type: string
+                  example: "Carbon mobile 5 with printer "
+                captureCardCapable:
+                  type: boolean
+                  example: false
+                partialAuthIndicator:
+                  type: boolean
+                  example: false
+                poiUid:
+                  type: string
+                  example: "174de8f5-7374-44b0-9ad7-0adf6504c22b"
+                  description: This is the uniquie id related to every poi.
+                createdDate:
+                  type: string
+                  example: "2021-08-23T16:29:01Z"
+                  description: Date this poi was created.
+                modifiedDate:
+                  type: string
+                  example: "2021-08-23T16:29:01Z"
+                  description: Date this poi was last modified.
+                version:
+                  type: integer
+                  example: 0
+                status:
+                  type: string
+                  example: "ACTIVE"
+                  description: The status of this poi.
+                entityUid:
+                  type: string
+                  example: "1e610900-8d17-43c6-a97c-d67e55002d8c"
+
+            processor:
+              type: object
+              description: >
+                This data is prepared using the response we get from the entity service.
+
+
+                Note - This is a dummy processor.
+              properties:
+                type:
+                  type: string
+                  example: "FISERV_AU"
+                  description: The name of the processor.
+                processorCategory:
+                  type: string
+                  example: "ACQUIRER"
+                  description: The category of the processor.
+                routingHeader:
+                  type: string
+                  example: "FISERV_AU"
+                currentSettlementDate:
+                  type: string
+                  example: "2022-01-11"
+                  description: Date when the processor has to undergo settlement.
+                poiCutoverStrategy:
+                  type: string
+                  example: "ONE_BATCH_PER_TRADING_DATE"
+                  description: Cutover strategy of the processor.
+
+            entity:
+              type: object
+              required:
+                - createdDate
+                - modifiedDate
+                - status
+                - altVfiEntityId
+              description: >
+                This data is prepared using the response we get from the entity service.
+
+
+                Note - This is a dummy entity.
+              properties:
+                altVfiEntityId:
+                  type: string
+                  example: "0999999"
+                  description: This is equivalent to the merchantId in the settlementData.
+                name:
+                  type: string
+                  example: "Site - 36vq941w5f "
+                legalName:
+                  type: string
+                  example: "Cole Stores"
+                email:
+                  type: string
+                  example: "qhlz75@gmail.com"
+                industry:
+                  type: string
+                  example: "QUICK_SERVICE_RESTAURANT"
+                mcc:
+                  type: string
+                  example: "5411"
+                entityType:
+                  type: string
+                  example: "MERCHANT_SITE"
+                parentEntityUid:
+                  type: string
+                  example: "bf934a76-5414-495e-be13-db321be27b13"
+                entityUid:
+                  type: string
+                  example: "1e610900-8d17-43c6-a97c-d67e55002d8c"
+                createdDate:
+                  type: string
+                  example: "2021-08-23T16:28:57Z"
+                modifiedDate:
+                  type: string
+                  example: "2021-08-23T16:29:00Z"
+                version:
+                  type: integer
+                  example: 2
+                status:
+                  type: string
+                  example: "ACTIVE"
+                objectType:
+                  type: string
+                  example: "Entity"
+
+        acqName:
+          type: string
+          example: <Acquirer Name>
+          description: Name of Acquirer registered in Entity Service
+    Success :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1100
+          description : Response code returned from PIM
+        message:
+          type: string
+          example: Success
+          description : Response message described by PIM
+        type:
+          type: string
+          example: null
+          description : Fot the type of PROCESS
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+          description : The time when response was created
+    ServiceUnavailable :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1200
+          description : Response code returned from PIM
+        message:
+          type: string
+          example: Service Unavailable
+          description : Response message described by PIM
+        type:
+          type: string
+          example: null
+          description : Fot the type of PROCESS
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+          description : The time when response was created
+    NotFound :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1200
+          description : Response code returned from PIM
+        message:
+          type: string
+          example: Not Found
+          description : Response message described by PIM
+        type:
+          type: string
+          example: null
+          description : Fot the type of PROCESS
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+          description : The time when response was created
+    BadRequest :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1200
+          description : Response code returned from PIM
+        message:
+          type: string
+          example: Bad Request
+          description : Response message described by PIM
+        type:
+          type: string
+          example: null
+          description : Fot the type of PROCESS
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+          description : The time when response was created
+    Fail :
+      type: object
+      properties:
+        code:
+          type: string
+          example: 1200
+          description : Response code returned from PIM
+        message:
+          type: string
+          example: "I/O error on POST request for https://10.68.57.197:8443/internal/api/processAcquirerSettlement Connect to 10.68.57.197:8443 [/10.68.57.197] failed: Connection timed out"
+          description : Response message described by PIM
+        type:
+          type: string
+          example: null
+          description : Fot the type of PROCESS
+        timestamp:
+          type: string
+          example: 2020-04-01T22:15:06.592
+          description : The time when response was created
+    ForcedCutoverSuccess:
+      type: object
+      properties:
+        response:
+          type: object
+          properties:
+            settlementData:
+              type: object
+              properties:
+                poiId:
+                  type: string
+                  example: "20222030"
+                  description: Id related to the settled poi.
+                merchantId:
+                  type: string
+                  example: "10001"
+                  description: Id related to the merchant.
+                initiatorTraceId:
+                  type: string
+                  example: "000010"
+                createdDateTime:
+                  type: string
+                  example: "2022-01-11T11:04:07Z"
+                batchNumber:
+                  type: string
+                  example: "20220112"
+                settlementDate:
+                  type: string
+                  example: "2022-01-12"
+    paymentProviderContracts:
+      type: object
+      required:
+        - contractUid
+        - entityUid
+        - status
+        - createdDate
+        - modifiedDate
+      properties:
+        name :
+          type : string
+          example : Acquirer Bank 1
+          description : A name to be associated with the contract.
+        mcc :
+          type : string
+          example : 5411
+          description : The Merchant Category Code (MCC).
+        startDate :
+          type : string
+          example : 2020-06-09
+          description : The date when the agreement will commence.
+        endDate :
+          type : string
+          example : 2020-06-09
+          description : he date when the agreement will terminate.
+        currency :
+          type : array
+          items :
+            type : string
+          example : [AED, USD]
+          description : Currency value
+        paymentType :
+          type : array
+          items :
+            type : string
+          example : [AFTRPAY, VISA]
+          description : The contract may be for specific types of payment e.g. VISA or MasterCard.
+        processor :
+          type : object
+          properties :
+            type : string
+            example : GLOBALPAY
+          config :
+            type : object
+            example : {}
+          parameters :
+            type : object
+            example : {}
+          description : The Payment Provider Contract Processor Configuration and definition
+        salesChannel :
+          type : string
+          example : ALL
+        nextParameterSync :
+          type : string
+          example : 2020-06-09T06:29:39Z
+          description : Where Host Parameters are downloaded from Acquirer the time to synchronise parameters is maintained
+        contractUid:
+          type: string
+          example: c898ca9a-224f-4375-8338-0ba2a5d22439
+          description: Payment contract ID
+        entityUid:
+          type: string
+          example: 6710edab-e850-4a70-84ae-ad496e705019
+          description: Entity/Acquirer contract ID
+        billing :
+          type : object
+          parameters :
+            paymentType :
+              type : string
+              example : BANK_TRANSFER
+            account :
+              type : object
+              example : {}
+              description : acccount details
+          description : The Billing details including the taxes applied to billing and the Billing Account
+        settlement :
+          type : object
+          parameters :
+            defaultTime :
+              type : string
+              example : 2020-06-09T06:29:28Z
+            manual :
+              type : string
+              example : false
+            settlementType :
+              type : string
+              example : ONLINE
+            settlementFileFormat :
+              type : string
+              example : CB2A_FICHIER
+            nextSyncTime :
+              type : string
+              example : 2020-06-09T06:29:28Z
+            clearing :
+              type : string
+              example: {}
+          description : The details to support settlement for the payment contract also containing the full Settlement Account detail.
+        fees :
+          type : object
+          example : {}
+          description : The list of fees
+        status:
+          type: string
+          example: ACTIVE
+          description: Status of the MERCHANT
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - DELETED
+        createdDate:
+          type: string
+          example: "2020-05-25T15:01:38.434+01:00"
+        modifiedDate:
+          type: string
+          example: "2020-05-25T15:01:38.434+01:00"
+        version:
+          type: integer
+          example: 0
+          description: Updated contract version
+
+    AcquirerDetail :
+      type : object
+      properties :
+        name :
+          type : string
+          description : Name of the acquirer.
+          example : <Acquirer name>
+        processType :
+          type : string
+          example : <Process Type>
+          description : The type of Settlement process which the Acquirer will be supporting.
+          enum :
+            - ACQUIRER
+            - MERCHANT
+            - BANKINGPARTNER
+            - RECONCILIATION
+            - CLEARING_RETURN_REPORT
+            - ACQUIRERCUTOFF
+            - MULTIPLE_CUTOFF_ACQUIRER
+            - FORCED_CUTOVER
+        settlementInitTime :
+          type : string
+          example : 1 1 1 * * ?
+          description : This field is required to submit the time to call entity service for this Acquirer. The value should be in form of Cron expression.
+        metadata :
+          type : object
+          description :  This is specific to acquirer.
+          additionalProperties :
+            type : object
