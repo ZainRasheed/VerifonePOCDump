@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="server-logger"
+              value="settlementEngine.logger"/>
+    <property name="error-logger"
+              value="error.logger"/>
+    <property name="log-path"
+              value="/var/log/vcs/settlementEngine/svc-global-settlement-engine"/>
+    <property name="sizePolicy"
+              value="10MB"/>
+    <property name="log-pattern"
+              value="[%p] [%d] [%X{TASK_NAME} %X{ACQUIRER_NAME} %X{PROCESS_TYPE} %t] [%c{1}] %m %ex%n"/>
+    <property name="rolled-file-postfix"
+              value="-%d{dd-MMM-yyyy}.%i.log.gz"/>
+    <property name="lastModified"
+              value="30"/>
+    <property name="logFileName"
+              value="svc-global-settlement-engine"/>
+    <springProperty scope="context" name="serverName" source="HOSTNAME"/>
+    <!--Uncomment this to see console logs in local-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <!-- provides the Thread Context -->
+                <nestedField>
+                    <fieldName>mdc</fieldName>
+                    <providers>
+                        <mdc/>
+                    </providers>
+                </nestedField>
+                <!-- provides the fields in the given pattern -->
+                <pattern>
+                    <!-- the pattern that defines what to include ["mdc": "%mdc",]-->
+                    <pattern>
+                        {
+                        "source_host": "${serverName:-${HOSTNAME}}",
+                        "message": "#tryJson{%message}"
+                        }
+                    </pattern>
+                </pattern>
+                <!-- provides the logLevel -->
+                <logLevel/>
+                <!-- provides the timestamp -->
+                <timestamp/>
+                <!-- provides the logger name -->
+                <loggerName/>
+                <!-- provides the exception -->
+                <stackTrace>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <maxLength>2048</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                        <rootCauseFirst>true</rootCauseFirst>
+                    </throwableConverter>
+                </stackTrace>
+            </providers>
+        </encoder>
+    </appender>
+    <appender name="serverLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log-path}/${logFileName}.log</file>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <!-- provides the Thread Context -->
+                <nestedField>
+                    <fieldName>mdc</fieldName>
+                    <providers>
+                        <mdc/>
+                    </providers>
+                </nestedField>
+                <!-- provides the fields in the given pattern -->
+                <pattern>
+                    <!-- the pattern that defines what to include ["mdc": "%mdc",]-->
+                    <pattern>
+                        {
+                        "source_host": "${serverName:-${HOSTNAME}}",
+                        "message": "#tryJson{%message}"
+                        }
+                    </pattern>
+                </pattern>
+                <!-- provides the logLevel -->
+                <logLevel/>
+                <!-- provides the timestamp -->
+                <timestamp/>
+                <!-- provides the logger name -->
+                <loggerName/>
+                <!-- provides the exception -->
+                <stackTrace>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <maxLength>2048</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                        <rootCauseFirst>true</rootCauseFirst>
+                    </throwableConverter>
+                </stackTrace>
+            </providers>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log-path}/archive/${logFileName}${rolled-file-postfix}</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>${sizePolicy}</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>${lastModified}</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <appender name="ErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log-path}/error_${logFileName}.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <!-- provides the Thread Context -->
+                <nestedField>
+                    <fieldName>mdc</fieldName>
+                    <providers>
+                        <mdc/>
+                    </providers>
+                </nestedField>
+                <!-- provides the fields in the given pattern -->
+                <pattern>
+                    <!-- the pattern that defines what to include ["mdc": "%mdc",]-->
+                    <pattern>
+                        {
+                        "source_host": "${serverName:-${HOSTNAME}}",
+                        "message": "#tryJson{%message}"
+                        }
+                    </pattern>
+                </pattern>
+                <!-- provides the logLevel -->
+                <logLevel/>
+                <!-- provides the timestamp -->
+                <timestamp/>
+                <!-- provides the logger name -->
+                <loggerName/>
+                <!-- provides the exception -->
+                <stackTrace>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <maxLength>2048</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                        <rootCauseFirst>true</rootCauseFirst>
+                    </throwableConverter>
+                </stackTrace>
+            </providers>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log-path}/archive/error_${logFileName}${rolled-file-postfix}</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>${sizePolicy}</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>${lastModified}</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <logger name="javax.activation" level="WARN" />
+    <logger name="javax.mail" level="WARN" />
+    <logger name="javax.xml.bind" level="WARN" />
+    <logger name="com.sun" level="WARN" />
+    <logger name="com.zaxxer" level="WARN" />
+    <logger name="org.apache" level="WARN" />
+    <logger name="org.hibernate" level="WARN" />
+    <logger name="org.springframework" level="WARN" />
+    <Logger name="org.springframework.data.convert.CustomConversions" level="ERROR"/>
+    <logger name="org.quartz" level="INFO" />
+    <logger name="com.novemberain" level="INFO" />
+    <Root level="debug">
+        <appender-ref ref="ErrorLog"/>
+        <appender-ref ref="serverLog"/>
+        <!--Uncomment this to see console logs in local-->
+        <appender-ref ref="STDOUT" level="debug"/>
+    </Root>
+    <logger name="${server-logger}" additivity="false">
+        <appender-ref ref="serverLog" />
+    </logger>
+    <logger name="${error-logger}" additivity="false">
+        <appender-ref ref="ErrorLog" />
+    </logger>
+</configuration>

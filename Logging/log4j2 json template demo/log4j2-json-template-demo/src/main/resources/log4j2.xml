@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+	<properties>
+		<property name="server-logger">settlementEngine.logger</property>
+		<property name="error-logger">error.logger</property>
+		<property name="log-path" value="/var/log/vcs/settlementEngine/svc-global-settlement-engine/TEST" />
+		<property name="sizePolicy">10 MB</property>
+		<property name="intervalPolicy">1</property>
+		<property name="log-pattern">[%p] [%d] [%X{TASK_NAME} %X{ACQUIRER_NAME} %X{PROCESS_TYPE} %t] [%c{1}] %m %ex%n</property>
+		<property name="rolled-file-postfix">-%d{dd-MMM-yyyy}.%i.log.gz</property>
+		<property name="lastModified">30D</property>
+		<property name="logFileName">svc-global-settlement-engine</property>
+	</properties>
+
+	<!-- Define custom levels before using them for filtering below. -->
+	<CustomLevels>
+		<CustomLevel name="HEALTHCHECK" intLevel="450" />
+	</CustomLevels>
+
+	<Appenders>
+
+		<!--Uncomment this to see console logs in local-->
+		<Console name="STDOUT" target="SYSTEM_OUT">
+            <!--<PatternLayout pattern="${log-pattern}" />-->
+
+			<!--Default template-->
+<!--			<JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json" locationInfoEnabled="false">-->
+
+			<!--<JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json" locationInfoEnabled="true">
+				Adding Filed
+				<EventTemplateAdditionalField key="_serviceName" value="DemoLogApp}"/>
+				Override field
+				<EventTemplateAdditionalField format="JSON" key="message" value='{"$resolver":"message", "fallbackKey":"Trace_Message"}'/>
+			</JsonTemplateLayout>-->
+
+			<!--Custom Template-->
+			<JsonTemplateLayout eventTemplateUri="classpath:templates/LogstashJsonEventLayoutV2.json">
+				<EventTemplateAdditionalField format="JSON" key="message" value='{"$resolver":"message"}'/>
+			</JsonTemplateLayout>
+		</Console>
+
+		<RollingFile name="serverLog" fileName="${log-path}/${logFileName}.log" filePattern="${log-path}/archive/${logFileName}${rolled-file-postfix}">
+			<PatternLayout pattern="${log-pattern}" />
+			<LevelRangeFilter minLevel="HEALTHCHECK" maxLevel="HEALTHCHECK" onMatch="DENY" onMismatch="NEUTRAL"/>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="${sizePolicy}" />
+				<TimeBasedTriggeringPolicy interval="${intervalPolicy}" modulate="true"/>
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${log-path}/archive" maxDepth = "1">
+					<IfLastModified age="${lastModified}"/>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<RollingFile name="ErrorLog" fileName="${log-path}/error_${logFileName}.log" filePattern="${log-path}/archive/error_${logFileName}${rolled-file-postfix}">
+			<PatternLayout pattern="${log-pattern}" />
+			<LevelRangeFilter minLevel="HEALTHCHECK" maxLevel="HEALTHCHECK" onMatch="DENY" onMismatch="NEUTRAL"/>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="${sizePolicy}" />
+				<TimeBasedTriggeringPolicy interval="${intervalPolicy}" modulate="true"/>
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${log-path}/archive" maxDepth = "1">
+					<IfLastModified age="${lastModified}"/>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<RollingFile name="healthLog" fileName="${log-path}/health_${logFileName}.log" filePattern="${log-path}/archive/health_${logFileName}${rolled-file-postfix}">
+			<PatternLayout pattern="${log-pattern}" />
+			<LevelRangeFilter minLevel="HEALTHCHECK" maxLevel="HEALTHCHECK" onMatch="ACCEPT" onMismatch="DENY"/>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="${sizePolicy}" />
+				<TimeBasedTriggeringPolicy interval="${intervalPolicy}" modulate="true"/>
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${log-path}/archive" maxDepth = "1">
+					<IfLastModified age="${lastModified}"/>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<logger name="javax.activation" level="WARN" />
+		<logger name="javax.mail" level="WARN" />
+		<logger name="javax.xml.bind" level="WARN" />
+		<logger name="com.sun" level="WARN" />
+		<logger name="com.zaxxer" level="WARN" />
+		<logger name="org.apache" level="WARN" />
+		<logger name="org.hibernate" level="WARN" />
+		<logger name="org.springframework" level="WARN" />
+		<logger name="org.quartz" level="INFO" />
+		<logger name="com.novemberain" level="FATAL" />
+		<Root level="debug">
+			<AppenderRef ref="ErrorLog" level="warn"/>
+			<AppenderRef ref="serverLog"/>
+			<AppenderRef ref="healthLog" level="HEALTHCHECK"/>
+			<!--Uncomment this to see console logs in local-->
+			<AppenderRef ref="STDOUT" level="debug"/>
+		</Root>
+		<Logger name="${server-logger}" additivity="false">
+			<AppenderRef ref="serverLog" />
+		</Logger>
+		<Logger name="${error-logger}" additivity="false">
+			<AppenderRef ref="ErrorLog" />
+		</Logger>
+		<logger name="com.example.log4j2.json.template.demo" additivity="false">
+			<AppenderRef ref="ErrorLog" level="warn"/>
+			<AppenderRef ref="serverLog"/>
+			<AppenderRef ref="healthLog" level="HEALTHCHECK"/>
+			<!--Uncomment this to see console logs in local-->
+			<AppenderRef ref="STDOUT" level="debug"/>
+		</logger>
+
+	</Loggers>
+</Configuration>

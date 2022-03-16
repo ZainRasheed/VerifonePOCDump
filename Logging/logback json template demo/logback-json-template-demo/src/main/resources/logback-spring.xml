@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="serverName" source="HOSTNAME" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--<encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>-->
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <!-- provides the Thread Context -->
+                <!--<mdc/>-->
+                <nestedField>
+                    <fieldName>mdc</fieldName>
+                    <providers>
+                        <mdc/>
+                    </providers>
+                </nestedField>
+                <!-- provides the fields in the configured pattern -->
+                <pattern>
+                    <!-- the pattern that defines what to include ["mdc": "%mdc",]-->
+                    <pattern>
+                        {
+                        "source_host": "${serverName:-${HOSTNAME}}",
+                        "message1": "#tryJson{%message}",
+                        "message2": "%message"
+                        }
+                    </pattern>
+                </pattern>
+                <!-- provides the message -->
+                <!--<message/>-->
+                <nestedField>
+                    <fieldName>messagess</fieldName>
+                    <providers>
+                        <message/>
+                    </providers>
+                </nestedField>
+                <!-- provides the logLevel -->
+                <logLevel/>
+                <!-- provides the timestamp -->
+                <timestamp/>
+                <!-- provides the logger name -->
+                <loggerName/>
+                <!-- provides the exception -->
+                <stackTrace>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <maxLength>2048</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                        <rootCauseFirst>true</rootCauseFirst>
+                    </throwableConverter>
+                </stackTrace>
+            </providers>
+        </encoder>
+        <!--<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <providers>
+                <timestamp/>
+                <version/>
+                <pattern>
+                    <pattern>
+                        {
+                        "has_message": "#asJson{%mdc{key1}}",
+                        "json_message": "#asJson{%message}"
+                        }
+                    </pattern>
+                </pattern>
+                <stackTrace>
+                    <throwableConverter
+                            class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <maxLength>2048</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                        <rootCauseFirst>true</rootCauseFirst>
+                    </throwableConverter>
+                </stackTrace>
+            </providers>
+        </encoder>-->
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
+
+<!--
+<configuration scan="true">
+    <include
+            resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include
+            resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <springProperty scope="context" name="LOG_PATH"
+                    source="logging.path" />
+    <springProperty scope="context" name="MAX_HISTORY"
+                    source="logging.maxhistory" />
+    <appender name="CONSOLE"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>EST</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "mdc": {
+                        "$resolver": "mdc"
+                        },
+                        "exception": {
+                        "exception_class": {
+                        "$resolver": "exception",
+                        "field": "className"
+                        },
+                        "exception_message": {
+                        "$resolver": "exception",
+                        "field":
+                        "message"
+                        },
+                        "stacktrace": {
+                        "$resolver": "exception",
+                        "field":
+                        "stackTrace",
+                        "stackTrace": {
+                        "stringified": true
+                        }
+                        }
+                        },
+                        "source_host":
+                        "${hostName}",
+                        "message": {
+                        "$resolver": "message",
+                        "stringified":
+                        true
+                        },
+                        "level": {
+                        "$resolver": "level",
+                        "field": "name"
+                        },
+                        "@timestamp": {
+                        "$resolver": "timestamp"
+                        },
+                        "logger_name": {
+                        "$resolver": "logger",
+                        "field": "name"
+                        }
+                        }
+                    </pattern>
+                </pattern>
+                <stackTrace>
+                    <throwableConverter
+                            class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <maxLength>2048</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                        <rootCauseFirst>true</rootCauseFirst>
+                    </throwableConverter>
+                </stackTrace>
+            </providers>
+        </encoder>
+    </appender>
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>static/self-signup-backend-service.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>static/self-signup-backend-service.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>EST</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "mdc": {
+                        "$resolver": "mdc"
+                        },
+                        "exception": {
+                        "exception_class": {
+                        "$resolver": "exception",
+                        "field": "className"
+                        },
+                        "exception_message": {
+                        "$resolver": "exception",
+                        "field":
+                        "message"
+                        },
+                        "stacktrace": {
+                        "$resolver": "exception",
+                        "field":
+                        "stackTrace",
+                        "stackTrace": {
+                        "stringified": true
+                        }
+                        }
+                        },
+                        "source_host":
+                        "${hostName}",
+                        "message": {
+                        "$resolver": "message",
+                        "stringified":
+                        true
+                        },
+                        "level": {
+                        "$resolver": "level",
+                        "field": "name"
+                        },
+                        "@timestamp": {
+                        "$resolver": "timestamp"
+                        },
+                        "logger_name": {
+                        "$resolver": "logger",
+                        "field": "name"
+                        }
+                        }
+                    </pattern>
+                </pattern>
+                <stackTrace>
+                    <throwableConverter
+                            class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <maxLength>2048</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                        <rootCauseFirst>true</rootCauseFirst>
+                    </throwableConverter>
+                </stackTrace>
+            </providers>
+        </encoder>
+    </appender>
+    <appender name="ASYNC"
+              class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <appender-ref ref="FILE" />
+    </appender>
+
+
+    <logger name="javax.activation" level="WARN" />
+    <logger name="javax.mail" level="WARN" />
+    <logger name="javax.xml.bind" level="WARN" />
+    <logger name="ch.qos.logback" level="WARN" />
+    <logger name="com.codahale.metrics" level="WARN" />
+    <logger name="com.netflix" level="WARN" />
+    <logger name="com.ryantenney" level="WARN" />
+    <logger name="com.sun" level="WARN" />
+    <logger name="com.zaxxer" level="WARN" />
+    <logger name="org.apache" level="WARN" />
+    <logger name="org.apache.catalina.startup.DigesterFactory"
+            level="OFF" />
+    <logger name="org.bson" level="WARN" />
+    <logger name="org.hibernate.validator" level="WARN" />
+    <logger name="org.hibernate" level="WARN" />
+    <logger name="org.hibernate.ejb.HibernatePersistence"
+            level="OFF" />
+    <logger name="org.springframework" level="WARN" />
+    <logger name="org.springframework.web" level="WARN" />
+    <logger name="org.springframework.security" level="WARN" />
+    <logger name="org.springframework.cache" level="WARN" />
+    <logger name="org.thymeleaf" level="WARN" />
+    <logger name="org.xnio" level="WARN" />
+    <logger name="springfox" level="WARN" />
+    <logger name="sun.rmi" level="WARN" />
+    <logger name="liquibase" level="WARN" />
+    <logger name="com.hazelcast" level="WARN" />
+    <logger name="sun.rmi.transport" level="WARN" />
+    <logger name="org.springframework.boot.devtools" level="WARN" />
+    <contextListener
+            class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <root level="#logback.loglevel#">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>
+-->
+
+
+
